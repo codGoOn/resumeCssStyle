@@ -1,11 +1,10 @@
 <?php
     $asArr = $news->getNews();
-    if(!$asArr){
-        $news->_db->lastErrorMsg();
-        $errMsg = 'произошла ошибка при выводе новостей ленты';   
-    }
-    echo 'Всего новостей ' . count($asArr);
-    foreach ($asArr as $val){
+    if(!is_array($asArr)){
+        $errMsg = "Произошла ошибка при выводе ленты";
+    }  else {
+        echo 'Всего новостей ' . count($asArr);
+        foreach ($asArr as $val){
        $id = $val['id'];
        $title = $val['title'];
        $category = $val['category'];
@@ -19,5 +18,6 @@
        </p>
        <p align = "right"><a href="news.php?del=$id">Удалить</a></p>
 LABEL;
+    }
     }
 ?>

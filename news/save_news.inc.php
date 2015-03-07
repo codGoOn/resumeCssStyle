@@ -5,12 +5,14 @@ $category = $news->clearStr($_POST['category']);
 $description = $news->clearStr($_POST['description']);
 $source = $news->clearStr($_POST['source']);
 
-if(empty($_POST['title']) or empty($_POST['description'])){
-    $errMsg = 'Заполните обязательные поля';
-    //exit();
+if(empty($title) or empty($description)){
+    $errMsg = 'Заполните обязательные поля';    
 }else{
-    $news->saveNews($title, $category, $description, $source);
+    if(!$news->saveNews($title, $category, $description, $source)){
+        $errMsg = 'Произошла ошибка при записи';
+    }else{
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit();
+    }
 }
-header('Location: ' . $_SERVER['PHP_SELF']);
-exit();
 

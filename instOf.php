@@ -5,17 +5,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-class Human{
-    public $men = "Vasia";
+$arr = array();
+$str = 'Come to me baby';
+for($i = strlen($str)-1; $i >= 0; $i--){
+    $arr[] = $str[$i];
 }
-class Men extends Human{
-    
+foreach ($arr as $val){
+    echo $val . '<br>';
 }
-$men = new Human();
-var_dump($men instanceof Human);
-/*if($men->men instanceof Human){
-    echo "Вася мужик!";
-}  else {
-    echo "Не мужик";
-}*/
+//echo var_dump($arr);

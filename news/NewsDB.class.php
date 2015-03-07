@@ -35,7 +35,8 @@ class NewsDB implements INewsDB{
         unset($this->_db);
     }
     public function saveNews($title, $category, $description, $source) {
-        $dt = time();
+        try{
+        $datetime = time();
         $sql = "INSERT INTO msgs (title, category, description, source, datetime)"
                 . "VALUES(:title, :category, :description, :source, :datetime)";
         $stmt = $this->_db->prepare($sql);
@@ -44,8 +45,15 @@ class NewsDB implements INewsDB{
         $stmt->bindValue(':description', $description);
         $stmt->bindValue(':source', $source);
         $stmt->bindValue(':datetime', $datetime);
-        $result = $stmt->execute() or die($this->_db->lastErrorMsg());
+        $result = $stmt->execute();
+        if(!is_object($result)){
+            throw new Exception($this->_db->lastErrorMsg());
+        }
         $stmt->close();
+        return TRUE;
+        }  catch (Exception $exc){
+           $exc->getMessage(); 
+        }
     }
     protected function fetch2Array($data){
         $arr = array();
@@ -56,18 +64,32 @@ class NewsDB implements INewsDB{
     }
 
     public function getNews() {
+        try{
         $sql = "SELECT msgs.id as id, title, category.name as category, description, source, datetime "
                 . "FROM msgs, category "
                 . "WHERE category.id = msgs.category "
                 . "ORDER BY msgs.id DESC;";
         //$result = $this->_db->querySingle($sql, TRUE);
         $result = $this->_db->query($sql) or die($this->_db->lastErrorMsg());
+        if(!is_object($result))
+            throw new Exception($this->_db->lastErrorMsg());
         return $this->fetch2Array($result);
+        }  catch (Exception $exc)
+        {
+            $exc->getMessage();
+        }
 
     }
     public function deleteNews($id) {
+        try{
         $sql = "DELETE FROM msgs WHERE id = $id";
-        $this->_db->exec($sql) or die($this->_db->lastErrorMsg());
+        $res = $this->_db->exec($sql);
+        if(!$res)
+            throw new Exception($this->_db->lastErrorMsg());
+        return TRUE;
+        }  catch (Exception $exc){
+           $exc->getMessage(); 
+        }
     }
     public function clearStr($data){
         $data = trim(strip_tags($data));
