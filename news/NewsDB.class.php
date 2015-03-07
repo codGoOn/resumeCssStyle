@@ -35,13 +35,45 @@ class NewsDB implements INewsDB{
         unset($this->_db);
     }
     public function saveNews($title, $category, $description, $source) {
-        ;
+        $dt = time();
+        $sql = "INSERT INTO msgs (title, category, description, source, datetime)"
+                . "VALUES(:title, :category, :description, :source, :datetime)";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->bindValue(':title', $title);
+        $stmt->bindValue(':category', $category);
+        $stmt->bindValue(':description', $description);
+        $stmt->bindValue(':source', $source);
+        $stmt->bindValue(':datetime', $datetime);
+        $result = $stmt->execute() or die($this->_db->lastErrorMsg());
+        $stmt->close();
     }
+    protected function fetch2Array($data){
+        $arr = array();
+        while ($row = $data->fetchArray(SQLITE3_ASSOC)){
+            $arr[] = $row;
+        }
+        return $arr;
+    }
+
     public function getNews() {
-        ;
+        $sql = "SELECT msgs.id as id, title, category.name as category, description, source, datetime "
+                . "FROM msgs, category "
+                . "WHERE category.id = msgs.category "
+                . "ORDER BY msgs.id DESC;";
+        //$result = $this->_db->querySingle($sql, TRUE);
+        $result = $this->_db->query($sql) or die($this->_db->lastErrorMsg());
+        return $this->fetch2Array($result);
+
     }
     public function deleteNews($id) {
-        ;
+        $sql = "DELETE FROM msgs WHERE id = $id";
+        $this->_db->exec($sql) or die($this->_db->lastErrorMsg());
+    }
+    public function clearStr($data){
+        $data = trim(strip_tags($data));
+        return $this->_db->escapeString($data);
+    }
+    public function clearInt($data){
+        return abs((int)$data);
     }
 }
-$news = new NewsDB; 

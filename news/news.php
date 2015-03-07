@@ -1,4 +1,5 @@
 <?php
+header('Content-type: text/html; charset=utf-8');
 require 'NewsDB.class.php';
 $news = new NewsDB;
 $errMsg = '';
@@ -6,6 +7,8 @@ $errMsg = '';
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     require 'save_news.inc.php';
 }
+if(isset($_GET['del']))
+    include 'delete_news.inc.php';
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -43,8 +46,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 </form>
 
-<?php
+<table>
+    <th></th>
+</table>
 
+<?php
+    require 'get_news.inc.php';
 ?>
 
 </body>
